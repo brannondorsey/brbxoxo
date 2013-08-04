@@ -78,5 +78,6 @@ function array_get_random($array, $numb_to_return){
 			<img src=<?php echo '"images/' . $first_images[2] . '"'; ?>/>
 			<img src=<?php echo '"images/' . $first_images[3] . '"'; ?>/>
 		</div>
+		<span>A project by <a href="http://placesiveneverbeen.com/">Addie Wagenknecht</a> and <a href="http://www.pablogarcia.org/">Pablo Garcia</a>. Code by <a href="http://brannondorsey.com">Brannon Dorsey</a></span>
 	</body>
 </html>
