@@ -53,6 +53,9 @@ function array_get_random($array, $numb_to_return){
 			var filesNames = <?php echo $files_JSON?>;
 			filesNames = filesNames.data;
 
+			//holds the image srcs at any given time
+			var imageSrcs = new Array();
+
 			$('document').ready(function(){
 				$(".image-container img").each(function(){
 					swapImage($(this));
@@ -62,32 +65,46 @@ function array_get_random($array, $numb_to_return){
 
 			function swapImage(imgObj){
 				//select image
-				var numbImages = filesNames.length;
-				var imageIndex = Math.floor(Math.random()*numbImages); //make this mutually exclusive so that no images can have the same url
-				var imageUrl = "images/" + filesNames[imageIndex];
-				var chanceToBuffer = 1/10;
-				if(Math.random() < chanceToBuffer) imageUrl = "loading.gif";
-				$(imgObj).attr("src", imageUrl);
-				
-				//set next timer
-				var min = 2000;
-				var max = 8000;
-				var time = Math.floor(Math.random() * (max - min + 1)) + min;
-				window.setTimeout(function(){
+				var imageIndex = pickIndex();
+				//if the image that was picked is not already displaying
+				if($.inArray(filesNames[imageIndex], imageSrcs) == -1){
+					var imageUrl = "images/" + filesNames[imageIndex];
+					var chanceToBuffer = 1/10;
+					if(Math.random() < chanceToBuffer) imageUrl = "loading.gif";
+					$(imgObj).attr("src", imageUrl);
+					var id = $(imgObj).attr("id");
+					imageSrcs[parseInt(id)] = filesNames[imageIndex];
+					
+					//set next timer
+					var min = 2000;
+					var max = 8000;
+					var time = Math.floor(Math.random() * (max - min + 1)) + min;
+					window.setTimeout(function(){
+						swapImage(imgObj);
+					}, time);
+				}else{
+					console.log("found a duplicate and chose another image");
 					swapImage(imgObj);
-				}, time);
+					return;
+				}
 			}
-			
+
+			//picks a random index value for an gif in images/ and returns it
+			//stored in its own function so that it can easily be recalled.
+			function pickIndex(){
+				var numbImages = filesNames.length;
+				return Math.floor(Math.random()*numbImages); //make this mutually exclusive so that no images can have the same url
+			}
 		</script>
 	</head>
 	<body>
 		<h1>brbxoxo</h1>
 		<div class="image-container">
-			<img src=<?php echo '"images/' . $first_images[0] . '"'; ?>/>
-			<img src=<?php echo '"images/' . $first_images[1] . '"'; ?>/>
-			<img src=<?php echo '"images/' . $first_images[2] . '"'; ?>/>
-			<img src=<?php echo '"images/' . $first_images[3] . '"'; ?>/>
+			<img id="0" src=<?php echo '"images/' . $first_images[0] . '"'; ?>/>
+			<img id="1" src=<?php echo '"images/' . $first_images[1] . '"'; ?>/>
+			<img id="2" src=<?php echo '"images/' . $first_images[2] . '"'; ?>/>
+			<img id="3" src=<?php echo '"images/' . $first_images[3] . '"'; ?>/>
 		</div>
-		<span>A project by <a href="http://placesiveneverbeen.com/">Addie Wagenknecht</a> and <a href="http://pablogarcia.org/">Pablo Garcia</a>. Code by <a href="http://brannondorsey.com">Brannon Dorsey</a></span>
+		<span>A project by <a href="http://placesiveneverbeen.com/">Addie Wagenknecht</a> and <a href="http://pablogarcia.org/">Pablo Garcia</a> | Code by <a href="http://brannondorsey.com">Brannon Dorsey</a></span>
 	</body>
 </html>
