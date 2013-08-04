@@ -25,7 +25,7 @@ time, mark, audio, video {
 }
 
 body{
-	font-family: Helvetica-Neue, Helvetica, Arial, sans-serif;
+	font-family: "Helvetica Neue" Helvetica, Arial, sans-serif;
 	width: 890px;
 	margin: auto;
 }
@@ -44,6 +44,7 @@ h1{
 	width: 170px;
 	margin: 30px auto 0px auto;
 	font-size: 36pt;
+	border-bottom: 1px dashed black;
 }
 
 .image-container{

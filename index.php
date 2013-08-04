@@ -49,24 +49,33 @@ function array_get_random($array, $numb_to_return){
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
 		<script type="text/javascript">
 			
+			//load the image names as JSON array inside data obj
 			var filesNames = <?php echo $files_JSON?>;
 			filesNames = filesNames.data;
 
-
 			$('document').ready(function(){
-				console.log(filesNames);
-				
+				$(".image-container img").each(function(){
+					swapImage($(this));
+				});
 			});
 
 
-			function swapImage(){
-				$('p').append("test ");
-
-				var min = 300;
-				var max = 2000;
+			function swapImage(imgObj){
+				//select image
+				var numbImages = filesNames.length;
+				var imageIndex = Math.floor(Math.random()*numbImages); //make this mutually exclusive so that no images can have the same url
+				var imageUrl = "images/" + filesNames[imageIndex];
+				var chanceToBuffer = 1/10;
+				if(Math.random() < chanceToBuffer) imageUrl = "loading.gif";
+				$(imgObj).attr("src", imageUrl);
+				
+				//set next timer
+				var min = 2000;
+				var max = 8000;
 				var time = Math.floor(Math.random() * (max - min + 1)) + min;
-				console.log(time + " ");
-				window.setTimeout(append, time);
+				window.setTimeout(function(){
+					swapImage(imgObj);
+				}, time);
 			}
 			
 		</script>
