@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
+		<script type="text/javascript">
+				
+			function append(){
+				$('p').append("test ");
+
+				var min = 300;
+				var max = 2000;
+				var time = Math.floor(Math.random() * (max - min + 1)) + min;
+				console.log(time + " ");
+				window.setTimeout(append, time);
+			}
+
+			$('document').ready(function(){
+				append();	
+			});
+			
+
+		</script>
+	</head>
+	<body>
+		<p></p>
+	</body>
+</html>
