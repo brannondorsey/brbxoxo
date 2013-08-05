@@ -50,8 +50,11 @@ function array_get_random($array, $numb_to_return){
 		<script type="text/javascript">
 			
 			//load the image names as JSON array inside data obj
-			var filesNames = <?php echo $files_JSON?>;
+			var filesNames = <?php echo $files_JSON; ?>;
 			filesNames = filesNames.data;
+
+			//load the gif data as JSON array
+			var gifData = <?php echo file_get_contents("data/gif_data.json"); ?>;
 
 			//holds the image srcs at any given time
 			var imageSrcs = new Array();
@@ -74,11 +77,31 @@ function array_get_random($array, $numb_to_return){
 					$(imgObj).attr("src", imageUrl);
 					var id = $(imgObj).attr("id");
 					imageSrcs[parseInt(id)] = filesNames[imageIndex];
+
+					var time;
+					//if the gif is a NOLOOP set time according to the gifs length so that it doesnt repeat
+					if(filesNames[imageIndex].toLowerCase().indexOf("noloop") != -1 &&
+						imageUrl.indexOf("loading.gif") == -1){
+						//look up the gif in the array of gifData objects
+						for(var i = 0; i < gifData.length; i++){
+							var gif = gifData[i];
+							//if a match is found...
+							console.log("this filename being tested is " + gif.file_name);
+							console.log("the name of the gif is " + filesNames[imageIndex]);
+							if(gif.file_name == filesNames[imageIndex]){
+								console.log("a match was found");
+								time = gif.duration * 10;
+								console.log("the timeout was set to occur in " + time);
+								break;
+							}else continue;
+						}
+					}else{ //otherwise set time according to a looping gif
+						//set next timer
+						var min = 4000;
+						var max = 20000;
+						time = Math.floor(Math.random() * (max - min + 1)) + min;
+					}
 					
-					//set next timer
-					var min = 4000;
-					var max = 20000;
-					var time = Math.floor(Math.random() * (max - min + 1)) + min;
 					window.setTimeout(function(){
 						swapImage(imgObj);
 					}, time);
