@@ -76,14 +76,14 @@ function array_get_random($array, $numb_to_return){
 					imageSrcs[parseInt(id)] = filesNames[imageIndex];
 					
 					//set next timer
-					var min = 2000;
-					var max = 8000;
+					var min = 4000;
+					var max = 20000;
 					var time = Math.floor(Math.random() * (max - min + 1)) + min;
 					window.setTimeout(function(){
 						swapImage(imgObj);
 					}, time);
 				}else{
-					console.log("found a duplicate and chose another image");
+					//console.log("found a duplicate and chose another image");
 					swapImage(imgObj);
 					return;
 				}
