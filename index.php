@@ -66,6 +66,8 @@ function array_get_random($array, $numb_to_return){
 			});
 
 
+			//use an optional parameter here to act as a switch for putting black images between each change
+			//then if optional parameter'fromWebcam'is defined make display black.
 			function swapImage(imgObj){
 				//select image
 				var imageIndex = pickIndex();
@@ -86,19 +88,30 @@ function array_get_random($array, $numb_to_return){
 						for(var i = 0; i < gifData.length; i++){
 							var gif = gifData[i];
 							//if a match is found...
-							console.log("this filename being tested is " + gif.file_name);
-							console.log("the name of the gif is " + filesNames[imageIndex]);
+							//console.log("this filename being tested is " + gif.file_name);
+							//console.log("the name of the gif is " + filesNames[imageIndex]);
 							if(gif.file_name == filesNames[imageIndex]){
-								console.log("a match was found");
+								//console.log("a match was found");
 								time = gif.duration * 10;
-								console.log("the timeout was set to occur in " + time);
+								//console.log("the timeout was set to occur in " + time);
 								break;
 							}else continue;
 						}
 					}else{ //otherwise set time according to a looping gif
 						//set next timer
-						var min = 4000;
-						var max = 20000;
+						var min, max;
+						//if the image is a loading spinner
+						if(imageUrl.indexOf("loading.gif") != -1){
+							min = 3000;
+							max = 10000;
+						}else{ //if the image is a webcam
+							min = 10000;
+							max = 45000;
+							if(Math.random() < 0.1){
+								min = 2000;
+								max = 5000;
+							}
+						}
 						time = Math.floor(Math.random() * (max - min + 1)) + min;
 					}
 					
