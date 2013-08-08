@@ -134,13 +134,12 @@ function array_get_random($array, $numb_to_return){
 		</script>
 	</head>
 	<body>
-		<h1>brbxoxo</h1>
 		<div class="image-container">
 			<img id="0" src=<?php echo '"images/' . $first_images[0] . '"'; ?>/>
 			<img id="1" src=<?php echo '"images/' . $first_images[1] . '"'; ?>/>
 			<img id="2" src=<?php echo '"images/' . $first_images[2] . '"'; ?>/>
 			<img id="3" src=<?php echo '"images/' . $first_images[3] . '"'; ?>/>
 		</div>
-		<span>A project by <a href="http://placesiveneverbeen.com/">Addie Wagenknecht</a> and <a href="http://pablogarcia.org/">Pablo Garcia</a> | Code by <a href="http://brannondorsey.com">Brannon Dorsey</a></span>
+		<a class="asterisk" href="about.php">*</a>
 	</body>
 </html>

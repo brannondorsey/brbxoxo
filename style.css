@@ -26,29 +26,28 @@ time, mark, audio, video {
 
 body{
 	font-family: "Helvetica Neue" Helvetica, Arial, sans-serif;
+	font-size: 10pt;
 	width: 890px;
 	margin: auto;
 }
 
 a{
-	text-decoration: none;
-	color: #7A7A7A;
+	color: black;
 }
 
 a:hover{
 	text-decoration: underline;
-	color: black;
+	color: #ff00ff;
 }
 
 h1{
-	width: 170px;
-	margin: 30px auto 0px auto;
-	font-size: 36pt;
-	border-bottom: 1px dashed black;
+	width: 120px;
+	margin: 30px auto 10px auto;
+	font-size: 20pt;
 }
 
 .image-container{
-	margin: 20px auto 10px auto;
+	margin: 30px auto 0px auto;
 }
 
 .image-container img{
@@ -57,9 +56,40 @@ h1{
 	margin: 5px;
 }
 
-span{
-	font-size: 10pt;
+.about-container{
+	width: 475px;
+	margin: 150px auto;
+}
+
+h1 a, a.asterisk, a.back{
+	text-decoration: none;
+	color: black;
+}
+
+a.asterisk{
+	text-decoration: none;
+	font-size: 25pt;
 	margin-bottom: 20px;
 	margin-left: 5px;
-	display: inline-block; 
+	display: inline-block;
 }
+
+a.asterisk:hover, h1 a:hover, a.back:hover{
+	text-decoration: none;
+	color:#ff00ff;
+}
+
+a.back{
+	display: inline-block;
+	font-size: 20px;
+	margin-top: 10px;
+	text-decoration: none;
+
+}
+
+span.credit{
+	display: inline-block;
+	margin-top: 20px;
+}
+
+
