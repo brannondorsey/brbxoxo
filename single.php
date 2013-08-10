@@ -46,9 +46,26 @@ function array_get_random($array, $numb_to_return){
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="style.css">
+		<style type="text/css">
+			body {
+				width: 433px;
+				display: block;
+				margin: auto;
+			}
+		</style>
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
 		<script type="text/javascript">
 			
+			//add center function to jQuery
+			jQuery.fn.center = function () {
+			    this.css("position","absolute");
+			    this.css("top", Math.max(0, (($(window).height() - $(this).outerHeight()) / 2) + 
+			                                                $(window).scrollTop()) + "px");
+			    this.css("left", Math.max(0, (($(window).width() - $(this).outerWidth()) / 2) + 
+			                                                $(window).scrollLeft()) + "px");
+			    return this;
+			}
+
 			//load the image names as JSON array inside data obj
 			var filesNames = <?php echo $files_JSON; ?>;
 			filesNames = filesNames.data;
@@ -60,6 +77,15 @@ function array_get_random($array, $numb_to_return){
 			var imageSrcs = new Array();
 
 			$('document').ready(function(){
+				
+				//dynamic centering with javascript
+				body = $('body');
+				body.center(false);
+				$(window).resize(function(){
+					body.center(false);
+				});
+
+				//switch gifs
 				$(".image-container img").each(function(){
 					swapImage($(this));
 				});
@@ -102,11 +128,11 @@ function array_get_random($array, $numb_to_return){
 						var min, max;
 						//if the image is a loading spinner
 						if(imageUrl.indexOf("loading.gif") != -1){
-							min = 3000;
-							max = 10000;
+							min = 2000;
+							max = 8000;
 						}else{ //if the image is a webcam
-							min = 10000;
-							max = 45000;
+							min = 7000;
+							max = 20000;
 							if(Math.random() < 0.1){
 								min = 2000;
 								max = 5000;
@@ -135,12 +161,8 @@ function array_get_random($array, $numb_to_return){
 	</head>
 	<body>
 		<div class="image-container">
-			<!--<img id="0" src=<?php echo '"images/' . $first_images[0] . '"'; ?>/>-->
 			<img id="0"/>
-			<img id="1"/>
-			<img id="2"/>
-			<img id="3"/>
 		</div>
-		<a class="asterisk" href="about.php">*</a>
+		<a class="asterisk" href="#">*</a>
 	</body>
 </html>
