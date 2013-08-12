@@ -52,12 +52,19 @@ function array_get_random($array, $numb_to_return){
 			//load the image names as JSON array inside data obj
 			var filesNames = <?php echo $files_JSON; ?>;
 			filesNames = filesNames.data;
+			// var origFilesNames = filesNames;
+			// var numbFiles = filesNames.length;
+
+			console.log("There are " + filesNames.length + " files to choose from");
 
 			//load the gif data as JSON array
 			var gifData = <?php echo file_get_contents("data/gif_data.json"); ?>;
 
 			//holds the image srcs at any given time
 			var imageSrcs = new Array();
+
+			//holds the names of the shown images to keep from repeating
+			var shownImages = new Array();
 
 			$('document').ready(function(){
 				$(".image-container img").each(function(){
@@ -69,18 +76,55 @@ function array_get_random($array, $numb_to_return){
 			//use an optional parameter here to act as a switch for putting black images between each change
 			//then if optional parameter'fromWebcam'is defined make display black.
 			function swapImage(imgObj){
-				//select image
-				var imageIndex = pickIndex();
+
+				//read the current image src
+				var currentImageURL = imgObj.attr("src");
+				
+				var stillLooking = true;
+				while(stillLooking){
+					//select image
+					var imageIndex = pickIndex();
+					console.log("I tried");
+					if($.inArray(filesNames[imageIndex], shownImages) == -1){
+						stillLooking = false;
+						console.log("I found a match");
+					} 
+				}
+
+				console.log(shownImages.length);
+
+				//var imageIndex = pickIndex();
+				
 				//if the image that was picked is not already displaying
-				if($.inArray(filesNames[imageIndex], imageSrcs) == -1){
+				if($.inArray(filesNames[imageIndex], imageSrcs) == -1){	
 					var imageUrl = "images/" + filesNames[imageIndex];
 					var chanceToBuffer = 1/10;
-					if(Math.random() < chanceToBuffer) imageUrl = "loading.gif";
+					var time;
+					var isBlack = false;
+					var isLoading = false;
+					//if the current image was not black or loading (because it was a webcam)
+					if(typeof currentImageURL !== 'undefined' &&
+					   currentImageURL.indexOf("black.jpg") == -1 &&
+					   currentImageURL.indexOf("loading.gif") == -1){
+					   imageUrl = "black.jpg";
+					   isBlack = true;
+					}
+					else if(Math.random() < chanceToBuffer){
+						imageUrl = "loading.gif";
+						isLoading = true;
+					} 
+
+					//swap the image
 					$(imgObj).attr("src", imageUrl);
 					var id = $(imgObj).attr("id");
 					imageSrcs[parseInt(id)] = filesNames[imageIndex];
 
-					var time;
+					if(!isBlack ||
+					   !isLoading){
+						//add the image to the shownImages array so that it doesn't get shown again
+						shownImages.push(filesNames[imageIndex]);
+					}
+
 					//if the gif is a NOLOOP set time according to the gifs length so that it doesnt repeat
 					if(filesNames[imageIndex].toLowerCase().indexOf("noloop") != -1 &&
 						imageUrl.indexOf("loading.gif") == -1){
@@ -104,7 +148,10 @@ function array_get_random($array, $numb_to_return){
 						if(imageUrl.indexOf("loading.gif") != -1){
 							min = 3000;
 							max = 10000;
-						}else{ //if the image is a webcam
+						}else if(isBlack){ //if the image was just set to black
+							min = 1000;
+							max = 2000;
+						}else{ //if the image is black
 							min = 10000;
 							max = 45000;
 							if(Math.random() < 0.1){
@@ -115,10 +162,12 @@ function array_get_random($array, $numb_to_return){
 						time = Math.floor(Math.random() * (max - min + 1)) + min;
 					}
 					
+					//set the timeout
 					window.setTimeout(function(){
-						swapImage(imgObj);
-					}, time);
-				}else{
+							swapImage(imgObj);
+						}, time);
+				}
+				else{
 					//console.log("found a duplicate and chose another image");
 					swapImage(imgObj);
 					return;
