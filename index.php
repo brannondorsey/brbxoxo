@@ -52,19 +52,17 @@ function array_get_random($array, $numb_to_return){
 			//load the image names as JSON array inside data obj
 			var filesNames = <?php echo $files_JSON; ?>;
 			filesNames = filesNames.data;
-			// var origFilesNames = filesNames;
-			// var numbFiles = filesNames.length;
+			var origFilesNames = filesNames.slice(); //copy the array. Stupid fucking sintax (http://stackoverflow.com/questions/7486085/copying-array-by-value-in-javascript)
+		    var numbFiles = filesNames.length;
+		    var usingOrigFilesNames = false;
 
-			console.log("There are " + filesNames.length + " files to choose from");
+			// console.log("There are " + filesNames.length + " files to choose from");
 
 			//load the gif data as JSON array
 			var gifData = <?php echo file_get_contents("data/gif_data.json"); ?>;
 
 			//holds the image srcs at any given time
 			var imageSrcs = new Array();
-
-			//holds the names of the shown images to keep from repeating
-			var shownImages = new Array();
 
 			$('document').ready(function(){
 				$(".image-container img").each(function(){
@@ -77,23 +75,20 @@ function array_get_random($array, $numb_to_return){
 			//then if optional parameter'fromWebcam'is defined make display black.
 			function swapImage(imgObj){
 
+				//if the images have all been viewed before...
+				if(!usingOrigFilesNames &&
+					filesNames.length <= 0){
+					console.log("All have been seen");
+					//reset filesNames to contain all of the original files in the 'images' folder
+					filesNames = origFilesNames;
+					usingOrigFilesNames = true;
+				}
+
 				//read the current image src
 				var currentImageURL = imgObj.attr("src");
 				
-				var stillLooking = true;
-				while(stillLooking){
-					//select image
-					var imageIndex = pickIndex();
-					console.log("I tried");
-					if($.inArray(filesNames[imageIndex], shownImages) == -1){
-						stillLooking = false;
-						console.log("I found a match");
-					} 
-				}
-
-				console.log(shownImages.length);
-
-				//var imageIndex = pickIndex();
+				//get a random image index
+				var imageIndex = pickIndex();
 				
 				//if the image that was picked is not already displaying
 				if($.inArray(filesNames[imageIndex], imageSrcs) == -1){	
@@ -118,12 +113,6 @@ function array_get_random($array, $numb_to_return){
 					$(imgObj).attr("src", imageUrl);
 					var id = $(imgObj).attr("id");
 					imageSrcs[parseInt(id)] = filesNames[imageIndex];
-
-					if(!isBlack ||
-					   !isLoading){
-						//add the image to the shownImages array so that it doesn't get shown again
-						shownImages.push(filesNames[imageIndex]);
-					}
 
 					//if the gif is a NOLOOP set time according to the gifs length so that it doesnt repeat
 					if(filesNames[imageIndex].toLowerCase().indexOf("noloop") != -1 &&
@@ -161,14 +150,22 @@ function array_get_random($array, $numb_to_return){
 						}
 						time = Math.floor(Math.random() * (max - min + 1)) + min;
 					}
-					
+
+					//if the image chosen is a webcam... don't let it get chosen again until all images have been seen
+					if(!usingOrigFilesNames && !isBlack ||
+					   !usingOrigFilesNames && !isLoading){
+					   	//remove the image from filesNames
+					   	filesNames = removeFromArray(filesNames[imageIndex], filesNames);
+					}
+
+					// console.log("The number of files to choose from is " + filesNames.length);
+
 					//set the timeout
 					window.setTimeout(function(){
 							swapImage(imgObj);
 						}, time);
 				}
-				else{
-					//console.log("found a duplicate and chose another image");
+				else{ //if the image picked is already displaying... try again
 					swapImage(imgObj);
 					return;
 				}
@@ -180,11 +177,23 @@ function array_get_random($array, $numb_to_return){
 				var numbImages = filesNames.length;
 				return Math.floor(Math.random()*numbImages); //make this mutually exclusive so that no images can have the same url
 			}
+
+			//returns a modified array with needle removed from haystack.
+			//returns false on failure
+			function removeFromArray(needle, haystack){
+				var index = haystack.indexOf(needle);
+				if(index != -1){
+					// Note: slice is a void function that returns the removed elements
+					// look it up (http://www.w3schools.com/jsref/jsref_splice.asp)
+					haystack.splice(index, 1);
+					return haystack;
+				}else return false;
+			}
 		</script>
 	</head>
 	<body>
 		<div class="image-container">
-			<!--<img id="0" src=<?php echo '"images/' . $first_images[0] . '"'; ?>/>-->
+			<!--<img id="0" src=<?php //echo '"images/' . $first_images[0] . '"'; ?>/>-->
 			<img id="0"/>
 			<img id="1"/>
 			<img id="2"/>
