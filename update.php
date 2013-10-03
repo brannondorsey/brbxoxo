@@ -1,6 +1,7 @@
 <?php
 require_once 'class.GifFrameExtractor.inc.php';
-ini_set('memory_limit','128M');
+ini_set('memory_limit','1G');
+set_time_limit (120);
 
 //read the names of the files in images/
 if($files = scandir("images")){
